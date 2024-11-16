@@ -25,7 +25,7 @@ app.use(express.json());
 // Allow CORS
 app.use(cors());
 app.use(cors({
-  origin: 'https://talktide-nill.vercel.app',
+  origin: 'https://talktide-nill.vercel.app/',
   methods:'GET,POST,PUT,DELETE,OPTIONS',
   allowedHeaders: 'Content-Type,Authorization',
   credentials: true
