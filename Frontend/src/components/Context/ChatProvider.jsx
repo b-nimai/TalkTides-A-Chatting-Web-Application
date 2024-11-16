@@ -12,7 +12,7 @@ const ChatProvider = ({children}) => {
     useEffect( () => {
         const checkAuth = async () => {
             try {
-                const response = await axios.get("https://localhost:5000/api/user/me", {
+                const response = await axios.get("https://talktide-backend.vercel.app/api/user/me", {
                     withCredentials: true
                 });
                 // console.log(response.data);

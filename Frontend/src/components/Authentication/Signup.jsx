@@ -31,7 +31,7 @@ function Signup({ onSignupSuccess }) {
         }
         // Call signup api
         try {
-            const { data } = await axios.post("https://localhost:5000/api/user", {
+            const { data } = await axios.post("https://talktide-backend.vercel.app/api/user", {
                 name,
                 email,
                 password,

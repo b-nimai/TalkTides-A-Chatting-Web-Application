@@ -20,7 +20,7 @@ function SideDrawer() {
 
     const logOutHandler = async () => {
       try {
-        await axios.post("https://localhost:5000/api/user/logout");
+        await axios.post("https://talktide-backend.vercel.app/user/logout");
         SetisLoggedin('false');
         navigate('/');
       } catch (error) {
