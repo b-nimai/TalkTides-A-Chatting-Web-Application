@@ -23,12 +23,25 @@ app.use(cookieParser());
 
 app.use(express.json());
 // Allow CORS
-app.use(cors());
+// app.use(cors());
+// app.use(cors({
+//   origin: 'https://talktide-nill.vercel.app/',
+//   methods:'GET,POST,PUT,DELETE,OPTIONS',
+//   allowedHeaders: 'Content-Type,Authorization',
+//   credentials: true
+// }));
+
+const allowedOrigins = ['https://talktide-nill.vercel.app', 'http://localhost:5173'];
+
 app.use(cors({
-  origin: 'https://talktide-nill.vercel.app/',
-  methods:'GET,POST,PUT,DELETE,OPTIONS',
-  allowedHeaders: 'Content-Type,Authorization',
-  credentials: true
+    origin: (origin, callback) => {
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
 }));
 
 // Other middleware and routes
