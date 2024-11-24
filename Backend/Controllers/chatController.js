@@ -28,7 +28,7 @@ const accessChatController = expressAsyncHandler( async(req, res) => {
     } else {
         const sendTo = await User.findById(userId);
         const chatData = {
-            chatName: sendTo.name,
+            chatName: "Sender",
             isGroupChat: false,
             users: [req.user._id, userId]
         };

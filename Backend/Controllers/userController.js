@@ -53,7 +53,7 @@ const loginController = expressAsyncHandler( async(req, res) => {
         // Check for registered User
         const user = await User.findOne({email});
         if(!user){
-            res.status(411).json({
+            return res.status(411).json({
                 success: false,
                 message: "User not found."
             })
@@ -72,19 +72,25 @@ const loginController = expressAsyncHandler( async(req, res) => {
             name: user.name,
             email: user.email,
         },
-            process.env.JWT_SECRET
+            process.env.JWT_SECRET,
+        {   
+            expiresIn: "1d" 
+        }
         )
+
         res.cookie("authToken", token, {
             httpOnly: true,
-            secure: true,  // Set this to true if you're on HTTPS
-            sameSite: "none", // Required for cross-origin requests
+            secure: false,  // Set this to true if you're on HTTPS
+            sameSite: 'lax', // Required for cross-origin requests
             maxAge: 24 * 60 * 60 * 1000 // 1 day
         });
 
         // return response
         return res.status(201).json({
             name: user.name,
-            email: user.email
+            email: user.email,
+            token
+
         })
     } catch (error) {
         return res.status(501).json({
@@ -94,16 +100,16 @@ const loginController = expressAsyncHandler( async(req, res) => {
         })
     }
 })
+
 // Logout controller
 const logoutController = expressAsyncHandler( async(req, res) => {
-     res.clearCookie('authToken', {
+    res.clearCookie('authToken', {
         httpOnly: true,
-        secure: true,
-        sameSite: 'None',
+        secure: false,
+        sameSite: 'lax',
     });
     res.status(200).send({ message: 'Logged out successfully' });
 });
-
 
 // Me controller
 const meController = expressAsyncHandler(async (req, res) => {

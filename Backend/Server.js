@@ -61,11 +61,11 @@ app.use('/api/chat', chatRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-// const port = process.env.PORT || 5000
-// // app.listen(port, console.log(`Server started at port ${port}`));
+const port = process.env.PORT || 5000
+app.listen(port, console.log(`Server started at port ${port}`));
 
 // https.createServer(options, app).listen(port, () => {
 //   console.log('Server is running on https://localhost:5000');
 // });
 
-module.exports = app;
+// module.exports = app;

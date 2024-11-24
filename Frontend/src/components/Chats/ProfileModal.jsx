@@ -1,63 +1,57 @@
-import { Box, Image, Input, Text } from "@chakra-ui/react"
+import { Box, Image, Text } from "@chakra-ui/react"
 import { Button } from "@/components/ui/button"
 import {
-  PopoverArrow,
-  PopoverBody,
-  PopoverContent,
-  PopoverRoot,
-  PopoverTitle,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+  DialogActionTrigger,
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogRoot,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 const ProfileModal = ({ user, children }) => {
-  return (
-    <div
-    >
-        <PopoverRoot 
-            positioning={{ 
-                placement: "bottom",
-                // offset: { crossAxis: 0, mainAxis: 0 } 
-            }}
-            isCentered={true}
-            
+    return (
+        <DialogRoot
+            placement={"center"}
+            motionPreset="slide-in-bottom"
         >
-            <PopoverTrigger asChild>
-                {
-                    children ? (<span>{children}</span>) : <button>View Profile</button>
-                }
-            </PopoverTrigger>
-            
-                <PopoverContent
-                
-                    style={{
-                        transform: "translate(10%, 40%)"
-                    }}
-                >
-                    <PopoverArrow />
-                    <PopoverBody>
-                        <PopoverTitle textAlign={'center'} fontWeight="medium">{user.name}</PopoverTitle>
-                        <Box 
-                            width='full' display='flex' flexDirection={'column'} justifyContent={'center'} my={5}
-                            alignItems={'center'} gap={5}
-                        >
-                            <Image 
-                            src={user.profilePic}
-                            boxSize="100px"
-                            borderRadius='full'
-                            alt={user.name}
-                            />
-                            <Text>
-                                Email: {user.email}
-                            </Text>
-                        </Box>
-
-                    </PopoverBody>
-                </PopoverContent>
-            
-        </PopoverRoot>
-        
-    </div>
-  )
+        <DialogTrigger asChild>
+            {
+                children ? (<span>{children}</span>) : <button>View Profile</button>
+            }
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle textAlign={'center'} fontWeight="medium">{user.name}</DialogTitle>
+          </DialogHeader>
+          <DialogBody>
+            <Box 
+                width='full' display='flex' flexDirection={'column'} justifyContent={'center'} my={5}
+                alignItems={'center'} gap={5}
+            >
+                <Image 
+                src={user.profilePic}
+                boxSize="100px"
+                borderRadius='full'
+                alt={user.name}
+                />
+                <Text>
+                    Email: {user.email}
+                </Text>
+            </Box>
+          </DialogBody>
+          <DialogFooter>
+            <DialogActionTrigger asChild>
+              <Button variant="outline">Close</Button>
+            </DialogActionTrigger>
+          </DialogFooter>
+          <DialogCloseTrigger />
+        </DialogContent>
+      </DialogRoot>
+    )
 }
 
 export default ProfileModal

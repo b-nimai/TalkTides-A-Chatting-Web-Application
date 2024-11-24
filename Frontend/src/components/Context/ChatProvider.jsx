@@ -7,12 +7,14 @@ const ChatContext = createContext();
 const ChatProvider = ({children}) => {
     const [isLoggedin, SetisLoggedin] = useState(false);
     const [user, setUser] = useState();
+    const [selectedChat, setSelectedChat] = useState();
+    const [chats, setChats] = useState([]);
     const navigate = useNavigate();
 
     useEffect( () => {
         const checkAuth = async () => {
             try {
-                const response = await axios.get("https://talktide-backend.vercel.app/api/user/me", {
+                const response = await axios.get(`http://localhost:5000/api/user/me`, {
                     withCredentials: true
                 });
                 // console.log(response.data);
@@ -28,7 +30,14 @@ const ChatProvider = ({children}) => {
         }
         checkAuth();
     }, [navigate])
-    return <ChatContext.Provider value={{ isLoggedin, SetisLoggedin, user, setUser }}>
+    return <ChatContext.Provider value={
+        { 
+            isLoggedin, SetisLoggedin, user, setUser, selectedChat, setSelectedChat,
+            chats, setChats 
+            // setSelectedChat
+        }
+    }
+    >
         {children}
     </ChatContext.Provider>
 }
