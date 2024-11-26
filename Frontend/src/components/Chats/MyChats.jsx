@@ -8,7 +8,7 @@ import ResultLoading from './ResultLoading'
 import { getSender } from './GetSender';
 import GroupChatModal from './GroupChatModal';
 
-function MyChats() {
+function MyChats({ fetchAgain }) {
   const { selectedChat, setSelectedChat, user, chats, setChats } = useChatState();
 
   const fetchChats = async () => {
@@ -27,7 +27,7 @@ function MyChats() {
 
   useEffect(() => {
     fetchChats();
-  }, [])
+  }, [fetchAgain])
 
   return (
     <Box

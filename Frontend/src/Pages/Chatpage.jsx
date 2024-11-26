@@ -3,10 +3,12 @@ import { useChatState } from "../components/Context/ChatProvider"
 import MyChats from "../components/Chats/MyChats";
 import ChatingSpace from "../components/Chats/ChatingSpace";
 import SideDrawer from "../components/Chats/SideDrawer";
+import { useState } from "react";
 
 
 function Chatpage() {
   const { isLoggedin } = useChatState();
+  const [fetchAgain, setFetchAgain] = useState(false);
   return <div style={{width: "100%"}}>
     { isLoggedin &&<SideDrawer />}
     <Box
@@ -16,8 +18,8 @@ function Chatpage() {
       h={"91vh"}
       p={'10px'}
     >
-      {isLoggedin && <MyChats />}
-      {isLoggedin && <ChatingSpace />}
+      {isLoggedin && <MyChats fetchAgain={fetchAgain} />}
+      {isLoggedin && <ChatingSpace fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
     </Box>
   </div>
 }
