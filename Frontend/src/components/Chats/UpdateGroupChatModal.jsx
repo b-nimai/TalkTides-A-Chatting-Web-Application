@@ -19,8 +19,9 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import debounce from '../Debounce'
 import UserListItem from './UserListItem'
+import { API_BASE_URL } from '../../config'
 
-const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
+const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain, fetchMessageHanlder }) => {
     const { user, setSelectedChat, selectedChat } = useChatState();
     const [groupName, setGroupName] = useState("");
     const [searchResults, setSearchResults] = useState([]);
@@ -37,7 +38,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
         }
         try {
             setRenameLoading(true);
-            const { data } = await axios.put('http://localhost:5000/api/chat/rename', {
+            const { data } = await axios.put(`${API_BASE_URL}/api/chat/rename`, {
                 chatId: selectedChat._id,
                 chatName: groupName
             }, {
@@ -62,7 +63,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
             }
             try {
                 setLoading(true);
-                const {data} = await axios.get(`http://localhost:5000/api/user?search=${query}`,
+                const {data} = await axios.get(`${API_BASE_URL}/api/user?search=${query}`,
                   {
                     withCredentials: true
                   }
@@ -96,7 +97,7 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
         // try catch
         try {
             setLoading(true);
-            const { data } = await axios.put("http://localhost:5000/api/chat/add", {
+            const { data } = await axios.put(`${API_BASE_URL}/api/chat/add`, {
                 chatId: selectedChat._id,
                 userId: userToAdd._id
             }, {
@@ -123,13 +124,14 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
 
         try {
             setLoading(true);
-            const { data } = await axios.put("http://localhost:5000/api/chat/remove", {
+            const { data } = await axios.put(`${API_BASE_URL}/api/chat/remove`, {
                 chatId: selectedChat._id,
                 userId: userToremove._id
             }, {
                 withCredentials: true
             })
             setSelectedChat(data);
+            fetchMessageHanlder();
             setFetchAgain(!fetchAgain);
             setLoading(false);
         } catch (error) {
@@ -142,13 +144,14 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
     const handeLeaveGroup = async(userToremove) => {
         try {
             setLoading(true);
-            const { data } = await axios.put("http://localhost:5000/api/chat/remove", {
+            const { data } = await axios.put(`${API_BASE_URL}/api/chat/remove`, {
                 chatId: selectedChat._id,
                 userId: userToremove._id
             }, {
                 withCredentials: true
             })
             setSelectedChat();
+            fetchMessageHanlder();
             setFetchAgain(!fetchAgain);
             setLoading(false);
         } catch (error) {

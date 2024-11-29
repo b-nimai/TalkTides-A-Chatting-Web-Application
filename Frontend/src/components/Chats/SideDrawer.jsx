@@ -27,6 +27,7 @@ import { useState } from "react"
 import toast from 'react-hot-toast'
 import ResultLoading from './ResultLoading'
 import UserListItem from './UserListItem'
+import { API_BASE_URL } from '../../config'
 
 function SideDrawer() {
     const { user, SetisLoggedin, setSelectedChat, chats, setChats } = useChatState();
@@ -40,7 +41,7 @@ function SideDrawer() {
     // logout function
     const logOutHandler = async () => {
       try {
-        await axios.post("http://localhost:5000/api/user/logout",
+        await axios.post(`${API_BASE_URL}/api/user/logout`,
           {},
           {
             withCredentials: true
@@ -63,7 +64,7 @@ function SideDrawer() {
 
       try {
         setLoading(true);
-        const {data} = await axios.get(`http://localhost:5000/api/user?search=${search}`,
+        const {data} = await axios.get(`${API_BASE_URL}/api/user?search=${search}`,
           {
             withCredentials: true
           }
@@ -80,7 +81,7 @@ function SideDrawer() {
       
       try {
         setLoadingChat(true);
-        const { data } = await axios.post('http://localhost:5000/api/chat', 
+        const { data } = await axios.post(`${API_BASE_URL}/api/chat`, 
           {
             userId
           },

@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/button";
 import ResultLoading from './ResultLoading'
 import { getSender } from './GetSender';
 import GroupChatModal from './GroupChatModal';
+import { API_BASE_URL } from '../../config'
 
 function MyChats({ fetchAgain }) {
   const { selectedChat, setSelectedChat, user, chats, setChats } = useChatState();
 
   const fetchChats = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/chat',
+      const { data } = await axios.get(`${API_BASE_URL}/api/chat`,
         {
           withCredentials: true
         }

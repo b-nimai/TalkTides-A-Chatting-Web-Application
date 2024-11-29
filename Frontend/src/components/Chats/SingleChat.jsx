@@ -1,13 +1,70 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useChatState } from '../Context/ChatProvider';
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Input, Spinner, Text } from '@chakra-ui/react';
 import { Button } from "@/components/ui/button"
 import { getSender, getSenderFull } from './GetSender';
 import ProfileModal from './ProfileModal';
 import UpdateGroupChatModal from './UpdateGroupChatModal';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import {API_BASE_URL} from '../../config'
+import ScrollableChat from './ScrollableChat';
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const { user, setSelectedChat, selectedChat } = useChatState();
+    const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [newMessage, setNewMessage] = useState("");
+
+    // Fetch messages handler
+    const fetchMessageHanlder = async() => {
+        if(!selectedChat) return;
+        try {
+            setLoading(true);
+            const { data } = await axios.get(`${API_BASE_URL}/api/message/${selectedChat._id}`, {
+                withCredentials: true
+            })
+            
+            setMessages(data);
+            setLoading(false);
+        } catch (error) {
+            toast.error("Failed to load message!");
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchMessageHanlder();
+    }, [selectedChat]);
+
+    // Send Message Handler
+    const sendMessageHandler = async(event) => {
+        if(event.key === "Enter" && newMessage) {
+            event.preventDefault();
+            try {
+                const { data } = await axios.post(`${API_BASE_URL}/api/message`, {
+                    content: newMessage,
+                    chatId: selectedChat._id
+                }, {
+                    withCredentials: true
+                })
+                console.log(data);
+                setNewMessage("");
+                setMessages([...messages, data]);
+                toast.success("Message send")
+            } catch (error) {
+                toast.error("Failer to send message, try again.")
+            }
+        }
+    };
+    // Typing Handler
+    const typingHandler = (e) => {
+        setNewMessage(e.target.value);
+
+        // Typing Indicator logic
+    };
+    
+
   return (
     <>
       {
@@ -39,7 +96,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                         ) : (
                             <>
                                 {selectedChat.chatName}
-                                <UpdateGroupChatModal fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                                <UpdateGroupChatModal fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}
+                                    fetchMessageHanlder={fetchMessageHanlder}
+                                />
 
                             </>
                         )
@@ -51,7 +110,32 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                     p={3} bg={"rgba(232, 232, 232, 0.5)"} w={'100%'} h={'100%'} borderRadius={'lg'}
                     overflowY={'hidden'}
                 >
-                    Messages Here
+                    {/* Messages Here */}
+                    {
+                        loading ? (
+                            <Spinner 
+                                size={'xl'} w={20} h={20} alignSelf={'center'} margin={'auto'}
+                            />
+                        ) : (
+                            <Box
+                                display={"flex"} flexDir={'column'} overflowY={'scroll'}
+                                scrollbarWidth={'none'}
+                            >
+                                <ScrollableChat messages={messages} />
+                            </Box>
+                        )
+                    }
+                    <Box mt={3}>
+                        <form onKeyDown={sendMessageHandler} >
+                            <Input 
+                                variant={'filled'}
+                                bg={"rgba(255, 255, 255, 1)"}
+                                placeholder='Enter message here...'
+                                value={newMessage}
+                                onChange={typingHandler}
+                            />
+                        </form>
+                    </Box>
                 </Box>
             </>
         ) : (

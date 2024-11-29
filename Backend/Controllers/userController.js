@@ -89,8 +89,7 @@ const loginController = expressAsyncHandler( async(req, res) => {
         return res.status(201).json({
             name: user.name,
             email: user.email,
-            token
-
+            // token
         })
     } catch (error) {
         return res.status(501).json({

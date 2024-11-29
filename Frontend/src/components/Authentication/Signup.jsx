@@ -5,6 +5,7 @@ import { Field } from "@/components/ui/field"
 import React, { useState } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast';
+import { API_BASE_URL } from '../../config'
 
 function Signup({ onSignupSuccess }) {
     const [name, setName] = useState();
@@ -31,7 +32,7 @@ function Signup({ onSignupSuccess }) {
         }
         // Call signup api
         try {
-            const { data } = await axios.post("https://talktide-backend.vercel.app/api/user", {
+            const { data } = await axios.post(`${API_BASE_URL}/api/user`, {
                 name,
                 email,
                 password,

@@ -5,18 +5,12 @@ const cors = require('cors');
 const connectToDB = require("./Config/DB.js");
 const userRoutes = require("./Routes/userRoutes.js");
 const chatRoutes = require('./Routes/chatRoutes.js')
+const messageRoutes = require('./Routes/messageRoutes.js')
 const { notFound, errorHandler } = require("./Middlewares/errorMiddlewares.js");
 const cookieParser = require("cookie-parser");
-// const https = require('https');
-// const fs = require('fs');
 
 
 const app = express();
-
-// const options = {
-//   key: fs.readFileSync('private-key.pem'),
-//   cert: fs.readFileSync('certificate.pem'),
-// };
 
 // Use cookie-parser middleware
 app.use(cookieParser());
@@ -35,7 +29,7 @@ const allowedOrigins = ['https://talktide-nill.vercel.app', 'http://localhost:51
 
 app.use(cors({
     origin: (origin, callback) => {
-        if (allowedOrigins.includes(origin)) {
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
             callback(new Error('Not allowed by CORS'));
@@ -56,6 +50,7 @@ app.get("/", (req, res) => {
 
 app.use('/api/user', userRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/message', messageRoutes);
 
 // Not Found Handler
 app.use(notFound);

@@ -19,6 +19,7 @@ import toast from 'react-hot-toast'
 import debounce from '../Debounce'
 import UserListItem from './UserListItem'
 import UserBadgeItem from './UserBadgeItem'
+import { API_BASE_URL } from '../../config'
 
 const GroupChatModal = ({children}) => {
     const [open, setOpen] = useState(false)
@@ -37,7 +38,7 @@ const GroupChatModal = ({children}) => {
             }
             try {
                 setLoading(true);
-                const {data} = await axios.get(`http://localhost:5000/api/user?search=${query}`,
+                const {data} = await axios.get(`${API_BASE_URL}/api/user?search=${query}`,
                   {
                     withCredentials: true
                   }
@@ -61,7 +62,7 @@ const GroupChatModal = ({children}) => {
             return;
         }
         try {
-            const { data } = await axios.post("http://localhost:5000/api/chat/group", {
+            const { data } = await axios.post(`${API_BASE_URL}/api/chat/group`, {
                 name: groupName,
                 users: JSON.stringify(selectedUsers.map((u) => u._id))
             },
