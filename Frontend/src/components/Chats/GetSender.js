@@ -24,9 +24,14 @@ export const isLastMessage = (messages, i, userId) => {
 }
 
 export const showProfilePic = (messages, m, i, userId) => {
+    if (!Array.isArray(messages) || messages.length === 0 || !m) return false;
     return (
-        (i === messages.length - 1 && m.sender._id !== userId) ||
-        (messages[i].sender._id !== userId && messages[i + 1].sender._id === userId)
+        (i === messages.length - 1 && m?.sender?._id !== userId) ||
+        (messages[i].sender?._id !== userId && messages[i + 1].sender?._id === userId) ||
+        (   (messages[i].sender?._id !== messages[i + 1]?.sender?._id) && 
+            (messages[i].sender?._id !== userId) && 
+            (messages[i + 1].sender?._id !== userId)
+        )
     )
 }
 

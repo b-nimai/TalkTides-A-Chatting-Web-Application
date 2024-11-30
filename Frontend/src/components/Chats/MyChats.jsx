@@ -37,7 +37,7 @@ function MyChats({ fetchAgain }) {
       borderRadius={'lg'} bg={'rgba(255, 255, 255, 0.5)'} color={'black'}
     >
       <Box
-        pb={3} px={3} fontFamily={'Work sans'} fontSize={{base: '2xs', md: '2xl'}} display={'flex'}
+        pb={3} px={3} fontFamily={'Work sans'} fontSize={{base: '2xl', md: '2xl'}} display={'flex'}
         w={'100%'} justifyContent={'space-between'} alignItems={'center'}
         borderBottomWidth={'1px'}
       >
