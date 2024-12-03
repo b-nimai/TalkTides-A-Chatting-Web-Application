@@ -8,19 +8,29 @@ import toast from 'react-hot-toast';
 import { API_BASE_URL } from '../../config'
 
 function Signup({ onSignupSuccess }) {
-    const [name, setName] = useState();
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
-    const [confirmPassword, setConfirmPassword] = useState();
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [pic, setPic] = useState();
     const [load, setLoad] = useState(false);
 
+    
 
     const submitHandler = async() => {
         setLoad(true);
+        // Simple regex for email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (email && !emailRegex.test(email)) {
+          toast.error("Please enter a valid email address.");
+          setLoad(false)
+          return;
+        }
+
         if(!name || !email || !password || !confirmPassword ) {
             // use toast for "Fill the required fields"
             toast.error("Fill the required fields")
+            setEmail("")
             setLoad(false);
             return;
         }
@@ -36,8 +46,7 @@ function Signup({ onSignupSuccess }) {
                 name,
                 email,
                 password,
-                confirmPassword,
-                pic
+                confirmPassword
             })
             // Success toast
             toast.success("Signup Success");
@@ -49,45 +58,44 @@ function Signup({ onSignupSuccess }) {
             setConfirmPassword("")
             setPic("")
         } catch (error) {
-            console.error("Signup failed due to:", error.message);
             // Show error toast
-            toast.error("Signup Failed");
+            toast.error(error.response.data.message);
             setLoad(false);
         }
     };
     // Upload image to cloudinary
-    const uploadImage = async (pics) => {
-        setLoad(true);
-        if(pics == undefined) {
-            // use toast
-            toast.error("Please upload an image")
-            setLoad(false);
-            return;
-        }
-        if(pics.type === 'image/jpeg' || pics.type == "image/png") {
-            const formData = new FormData();
-            formData.append("file", pics);
-            formData.append("upload_preset", "Talk_Tide_ChatApp");
-            formData.append("cloud_name", "dvvznsplk"); 
+    // const uploadImage = async (pics) => {
+    //     setLoad(true);
+    //     if(pics == undefined) {
+    //         // use toast
+    //         toast.error("Please upload an image")
+    //         setLoad(false);
+    //         return;
+    //     }
+    //     if(pics.type === 'image/jpeg' || pics.type == "image/png") {
+    //         const formData = new FormData();
+    //         formData.append("file", pics);
+    //         formData.append("upload_preset", "Talk_Tide_ChatApp");
+    //         formData.append("cloud_name", "dvvznsplk"); 
 
-            try {
-                const response = await fetch("https://api.cloudinary.com/v1_1/dvvznsplk/image/upload", {
-                  method: "POST",
-                  body: formData
-                });
-                const data = await response.json();
+    //         try {
+    //             const response = await fetch("https://api.cloudinary.com/v1_1/dvvznsplk/image/upload", {
+    //               method: "POST",
+    //               body: formData
+    //             });
+    //             const data = await response.json();
                 
-                if (data.secure_url) {
-                  setPic(data.secure_url.toString());
-                  console.log(data.secure_url.toString());
-                  setLoad(false);
-                }
-            } catch (error) {
-                console.error("Error uploading image:", error);
-                setLoad(false);
-            }
-        }
-    }
+    //             if (data.secure_url) {
+    //               setPic(data.secure_url.toString());
+    //               console.log(data.secure_url.toString());
+    //               setLoad(false);
+    //             }
+    //         } catch (error) {
+    //             console.error("Error uploading image:", error);
+    //             setLoad(false);
+    //         }
+    //     }
+    // }
 
   return (
     <VStack p={'2'} color={'black'} >
@@ -103,6 +111,7 @@ function Signup({ onSignupSuccess }) {
 
         <Field label="Email: " required>
             <Input 
+                type='email'
                 placeholder='Enter your Email'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -134,7 +143,7 @@ function Signup({ onSignupSuccess }) {
             </Field>
         </HStack>
 
-        <Field label="Upload Your Picture: ">
+        {/* <Field label="Upload Your Picture: ">
             <Input 
                 type='file'
                 p={1.5}
@@ -145,7 +154,7 @@ function Signup({ onSignupSuccess }) {
                 fontSize={'xl'}
                 fontFamily={'Work sans'}
             />
-        </Field>
+        </Field> */}
 
         <Button 
             colorScheme={'blue'}

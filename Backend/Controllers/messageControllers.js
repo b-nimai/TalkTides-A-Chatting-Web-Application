@@ -2,6 +2,7 @@ const expressAsyncHandler = require("express-async-handler");
 const Message = require('../Schema/MessageSchema');
 const User = require("../Schema/UserSchema");
 const Chat = require("../Schema/ChatSchema");
+const Notification = require("../Schema/Notification");
 
 // Send message controller
 const sendMessageController = expressAsyncHandler( async(req, res) => {
@@ -29,9 +30,24 @@ const sendMessageController = expressAsyncHandler( async(req, res) => {
             select: "name pic email"
         });
 
-        await Chat.findByIdAndUpdate(req.body.chatId, {
+        const chat = await Chat.findByIdAndUpdate(req.body.chatId, {
             latestMessage: message
         })
+        // ----------- For Notifications --------------
+        const receivers = chat.users.filter((u) => (
+            u._id.toString() !== req.user._id.toString()
+        ))
+        const notificationContent = chat.isGroupChat
+            ? `New Message in ${chat.chatName}`
+            : `New Message from ${req.user.name}`;
+
+        const notifications = receivers.map((receiver) => ({
+            content: notificationContent,
+            sender: req.user._id,
+            receiver: receiver._id,
+            chat: chatId
+        }));
+        await Notification.insertMany(notifications);
         // return res
         return res.json(message);
     } catch (error) {

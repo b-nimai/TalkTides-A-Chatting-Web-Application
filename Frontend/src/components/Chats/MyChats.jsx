@@ -9,8 +9,16 @@ import { getSender } from './GetSender';
 import GroupChatModal from './GroupChatModal';
 import { API_BASE_URL } from '../../config'
 
-function MyChats({ fetchAgain }) {
-  const { selectedChat, setSelectedChat, user, chats, setChats } = useChatState();
+function MyChats({ fetchAgain, setFetchAgain }) {
+  const { 
+    selectedChat, 
+    setSelectedChat, 
+    user, 
+    chats, 
+    setChats, 
+    notification, 
+    setNotification 
+  } = useChatState();
 
   const fetchChats = async () => {
     try {
@@ -19,17 +27,29 @@ function MyChats({ fetchAgain }) {
           withCredentials: true
         }
       )
-      // console.log(data);
       setChats(data);
     } catch (error) {
       toast.error("Failed to load your chats.")
     }
   }
 
+  // Fetch notifications
+  const fetchNotifications = async() => {
+    try {
+      const { data } = await axios.get(`${API_BASE_URL}/api/notification`, {
+        withCredentials: true
+      });
+      setNotification(data);
+
+    } catch (error) {
+      toast.error('Failed to load notifications.')
+    }
+  }
+
   useEffect(() => {
     fetchChats();
+    fetchNotifications();
   }, [fetchAgain])
-
   return (
     <Box
       display={{base: selectedChat ? "none" : 'flex', md: 'flex'}} flexDirection={'column'}
@@ -65,17 +85,61 @@ function MyChats({ fetchAgain }) {
               'scrollbarWidth': 'none', // Hide scrollbar for Firefox
             }}
           >
-            {chats.map((chat) => (
-              <Box
-                onClick={() => setSelectedChat(chat)} cursor={'pointer'} 
-                bg={selectedChat === chat ? 'cyan.300' : 'cyan.500'} _hover={{background:'cyan.200'}}
-                px={3} py={2} borderRadius={'lg'} key={chat._id}
-              >
-                <Text>
-                  {!chat.isGroupChat ? getSender(user, chat.users) : chat.chatName}
-                </Text>
-              </Box>
-            ))}
+            {chats.map((chat) => {
+              // Check if there is unread notifications for the current chat
+              const unreadForChat = notification.filter(
+                (n) => n.chat._id === chat._id && !n.isRead
+              )
+        
+              return (
+                <Box
+                  onClick={() => {
+                    setSelectedChat(chat);
+                    // Mark notifications for this chat as read
+                    unreadForChat.forEach(async (notify) => {
+                      await axios.put(
+                        `${API_BASE_URL}/api/notification/markAsRead`, {
+                          notificationId: notify._id
+                        }, {
+                          withCredentials: true
+                        }
+                      );
+                      setFetchAgain(!fetchAgain);
+                    });
+                    // Update notifications  state for the selected chat
+                    setNotification((prev) =>
+                      prev.map((n) =>
+                        n.chat._id === chat._id ? { ...n, isRead: true } : n
+                      )
+                    );
+                  }}
+                  cursor={'pointer'} 
+                  bg={selectedChat === chat ? 'cyan.300' : 'cyan.500'} _hover={{background:'cyan.200'}}
+                  px={3} py={2} borderRadius={'lg'} key={chat._id}
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                >
+                  <Text>
+                    {!chat.isGroupChat ? getSender(user, chat.users) : chat.chatName}
+                  </Text>
+                  {unreadForChat.length > 0 && (
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        marginLeft: '8px',
+                        padding: '2px 8px',
+                        fontSize: '12px',
+                        background: 'red',
+                        color: 'white',
+                        borderRadius: '12px',
+                      }}
+                    >
+                      {unreadForChat.length} New
+                    </span>
+                  )}
+                </Box>
+              )
+            })}
           </Stack>
         ) : (
           <ResultLoading />

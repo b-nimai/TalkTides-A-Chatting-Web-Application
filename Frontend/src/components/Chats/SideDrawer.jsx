@@ -1,4 +1,4 @@
-import { Box, Input, Spinner, Text } from '@chakra-ui/react'
+import { Box, Input, Spinner, Text, Badge } from '@chakra-ui/react'
 import { Button } from "@/components/ui/button"
 import { Tooltip } from "@/components/ui/tooltip"
 import { Avatar } from "@/components/ui/avatar"
@@ -8,7 +8,7 @@ import {
   MenuRoot,
   MenuTrigger,
 } from "@/components/ui/menu"
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useChatState } from '../Context/ChatProvider'
 import ProfileModal from './ProfileModal'
 import { useNavigate } from 'react-router-dom'
@@ -28,9 +28,20 @@ import toast from 'react-hot-toast'
 import ResultLoading from './ResultLoading'
 import UserListItem from './UserListItem'
 import { API_BASE_URL } from '../../config'
+import { getSender } from './GetSender'
+// import Badge from 'react-badges'
 
-function SideDrawer() {
-    const { user, SetisLoggedin, setSelectedChat, chats, setChats } = useChatState();
+function SideDrawer({ fetchAgain, setFetchAgain }) {
+    const { 
+      user, 
+      SetisLoggedin, 
+      selectedChat,
+      setSelectedChat, 
+      chats, 
+      setChats, 
+      notification, 
+      setNotification
+    } = useChatState();
     const [open, setOpen] = useState(false)
     const [search, setSearch ] = useState("");
     const [searchResult, setSearchResult] = useState()
@@ -50,7 +61,7 @@ function SideDrawer() {
         SetisLoggedin('false');
         navigate('/');
       } catch (error) {
-        console.log("Error While logout: ", error.message);
+        toast.error("Failed to logout.");
       }
     }
     // Search User function
@@ -96,12 +107,9 @@ function SideDrawer() {
         setLoadingChat(false);
         setOpen(false);
       } catch (error) {
-        console.log("Error message: ", error.message);
-        console.log("Error: " , error)
         toast.error("Error Accessing chat")
       }
     }
-
   return (
     <div>
       <Box
@@ -137,12 +145,49 @@ function SideDrawer() {
         >
             <MenuRoot>
               <MenuTrigger asChild>
-                <button style={{cursor: 'pointer', padding:'5px'}}>
-                    <i className="fa-solid fa-bell fa-xl"></i>
+                <button style={{ cursor: "pointer", padding: "5px", position: "relative" }}>
+                  <i className="fa-solid fa-bell fa-xl"></i>
+                  {notification.length > 0 && (
+                    <Badge
+                      bg="rgb(252, 41, 37)"
+                      borderRadius="full"
+                      position="absolute"
+                      top="0px"
+                      right="-8px"
+                      fontSize="0.8em"
+                      // padding="px"
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      boxShadow="md"
+                    >
+                      {notification.length}
+                    </Badge>
+                  )}
                 </button>
               </MenuTrigger>
               <MenuContent>
-                <MenuItem value="new-txt">New Text File</MenuItem>
+                {!notification.length && <MenuItem>No New Notification</MenuItem>}
+                {
+                  notification.map((notify) => (
+                    <MenuItem 
+                      key={notify._id}
+                      // onClick={()=> {
+                      //   if (!notify.chat) {
+                      //     toast.error("Chat data not available!");
+                      //     return;
+                      //   }
+                      //   setSelectedChat(notify.chat);
+                      // }}
+                    >
+                      {
+                        notify.chat.isGroupChat ? 
+                          `New Message in ${notify.chat.chatName}` 
+                          : `New Message from ${notify.sender.name}`
+                      }
+                    </MenuItem>
+                  ))
+                }
               </MenuContent>
             </MenuRoot>
             

@@ -1,11 +1,11 @@
 const express = require("express");
-const { chats } = require("./data/data.js");
 require("dotenv").config();
 const cors = require('cors');
 const connectToDB = require("./Config/DB.js");
 const userRoutes = require("./Routes/userRoutes.js");
 const chatRoutes = require('./Routes/chatRoutes.js')
 const messageRoutes = require('./Routes/messageRoutes.js')
+const notificationRoutes = require('./Routes/notificationRoutes.js');
 const { notFound, errorHandler } = require("./Middlewares/errorMiddlewares.js");
 const cookieParser = require("cookie-parser");
 const { Server } = require('socket.io');
@@ -17,14 +17,6 @@ const app = express();
 app.use(cookieParser());
 
 app.use(express.json());
-// Allow CORS
-// app.use(cors());
-// app.use(cors({
-//   origin: 'https://talktide-nill.vercel.app/',
-//   methods:'GET,POST,PUT,DELETE,OPTIONS',
-//   allowedHeaders: 'Content-Type,Authorization',
-//   credentials: true
-// }));
 
 const allowedOrigins = ['https://talktide-nill.vercel.app', 'http://localhost:5173'];
 
@@ -52,6 +44,7 @@ app.get("/", (req, res) => {
 app.use('/api/user', userRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/message', messageRoutes);
+app.use('/api/notification', notificationRoutes);
 
 // Not Found Handler
 app.use(notFound);

@@ -36,8 +36,7 @@ function Login() {
       navigate("/chat");
       setLoad(false);
     } catch (error) {
-      console.log("Error in login due to: ", error.message);
-      toast.error("Login Failed")
+      toast.error(error.response.data.message)
       setLoad(false)
     }
   };

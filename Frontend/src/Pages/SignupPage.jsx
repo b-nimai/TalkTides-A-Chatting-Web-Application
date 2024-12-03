@@ -11,7 +11,7 @@ function SignupPage() {
   const { isLoggedin } = useChatState();
   const navigate = useNavigate();
   useEffect(()=> {
-    if(isLoggedin) {
+    if(isLoggedin === true) {
       navigate("/chat")
     }
   },[navigate, isLoggedin])

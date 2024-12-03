@@ -16,14 +16,13 @@ import animationData from '../../animations/typing.json'
 let socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
-    const { user, setSelectedChat, selectedChat } = useChatState();
+    const { user, setSelectedChat, selectedChat, notification, setNotification } = useChatState();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [newMessage, setNewMessage] = useState("");
     const [socketConnected, setSocketConnected] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
     const [typing, setTyping] = useState(false);
-    const typingTimeoutRef = useRef(null); // Use ref for consistent timeout management
 
     // Lottie Option
     const defaultOptions = {
@@ -76,6 +75,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 selectedChatCompare._id !== newMessageRecived.chat._id
             ) {
                 // Give notification
+                if(!notification.includes(newMessageRecived)) {
+                    setNotification([newMessageRecived, ...notification]);
+                    setFetchAgain(!fetchAgain);
+                }
             }
             else {
                 setMessages([...messages, newMessageRecived]);
@@ -83,9 +86,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         })
     })
 
+
     // Send Message Handler
     const sendMessageHandler = async(event) => {
-        if(event.key === "Enter" && newMessage) {
+        if(event.key === "Enter" && newMessage.trim()) {
             event.preventDefault();
             socket.emit("stop typing", selectedChat._id);
             try {
@@ -95,11 +99,31 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 }, {
                     withCredentials: true
                 })
-                // console.log(data);
                 socket.emit("new message", data);
                 setNewMessage("");
                 setMessages([...messages, data]);
-                toast.success("Message send")
+                toast.success("Message send.")
+            } catch (error) {
+                toast.error("Failer to send message, try again.")
+            }
+        }
+    };
+
+    const sendMessageHandlerWithButton = async() => {
+        if(newMessage.trim()) {
+            socket.emit("stop typing", selectedChat._id);
+            try {
+                const { data } = await axios.post(`${API_BASE_URL}/api/message`, {
+                    content: newMessage,
+                    chatId: selectedChat._id
+                }, {
+                    withCredentials: true
+                })
+                
+                socket.emit("new message", data);
+                setNewMessage("");
+                setMessages([...messages, data]);
+                toast.success("Message Send.")
             } catch (error) {
                 toast.error("Failer to send message, try again.")
             }
@@ -127,11 +151,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 setTyping(false);
             }
         }, timerLength);
-        // clearTimeout(typingTimeoutRef.current); // Clear the previous timeout
-        // typingTimeoutRef.current = setTimeout(() => {
-        //   socket.emit("stop typing", selectedChat._id);
-        //   typingTimeoutRef.current = null; // Reset the ref
-        // }, 3000); // 3-second delay for typing indicator
+    
     };
     
 
@@ -204,13 +224,21 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                     style={{marginBottom: 0, marginLeft: 0}} 
                                 />
                             </div>}
-                            <Input 
-                                variant={'filled'}
-                                bg={"rgba(255, 255, 255, 1)"}
-                                placeholder='Enter message here...'
-                                value={newMessage}
-                                onChange={typingHandler}
-                            />
+                            <Box display={'flex'} gap={1}>
+                                <Input 
+                                    variant={'filled'}
+                                    bg={"rgba(255, 255, 255, 1)"}
+                                    placeholder='Enter message here...'
+                                    value={newMessage}
+                                    onChange={typingHandler}
+                                    onBlur={() => setNewMessage((prev) => prev.trim())}
+                                />
+                                <Button 
+                                    onClick={sendMessageHandlerWithButton}
+                                >
+                                    <i className="fa-regular fa-paper-plane"></i>
+                                </Button>
+                            </Box>
                         </form>
                     </Box>
                 </Box>

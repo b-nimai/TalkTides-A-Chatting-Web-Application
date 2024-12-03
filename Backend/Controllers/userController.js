@@ -16,7 +16,7 @@ const signupController = expressAsyncHandler(async (req, res) => {
     // if User already exist throw an error
     if(userExists) {
         res.status(400);
-        throw new Error("User Already exists.");
+        throw new Error("Email already registered with another Account.");
     }
     // hashed the password
     const hashedPassword = await bcrypt.hash(password, 10);
