@@ -1,42 +1,87 @@
 const expressAsyncHandler = require("express-async-handler");
 const User = require('../Schema/UserSchema')
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const OTP = require("../Schema/OtpSchema");
+const { mailSender } = require("../Mail/SendMail");
+const otpTemplate = require("../Mail/OtpTemplate");
+const bcrypt = require('bcrypt');
+const wellcomeMail = require("../Mail/WellcomeMail");
+
+// Send OTP Controller
+const sendOtpController = expressAsyncHandler(async (req, res) => {
+    try {
+        const { firstName, email, password, confirmPassword } = req.body;
+        // Checking for empty fields
+        if(!firstName || !email || !password || !confirmPassword  ) {
+            res.status(400);
+            throw new Error("Please Enter all the Feilds.");
+        }
+        if(password !== confirmPassword) {
+            res.status(400);
+            throw new Error("Password not matched with confirmPassword");
+        }
+        // Checking for existing user
+        const userExists = await User.findOne({email});
+        // if User already exist throw an error
+        if(userExists) {
+            res.status(400);
+            throw new Error("Email already registered with another Account.");
+        }
+        // Generate OTP
+        const otp = crypto.randomInt(1000, 9999).toString();
+        await OTP.create({
+            email,
+            otp
+        })
+        await mailSender(email, "OTP Verification Email", otpTemplate(otp));
+        return res.status(201).json({
+            success: true,
+            message: "OTP Send successfull."
+        })
+    } catch (error) {
+        return res.status(511).json({
+            success: false,
+            message: error.message
+        })
+    }
+})
 
 // Singup Controller
 const signupController = expressAsyncHandler(async (req, res) => {
-    const { name, email, password, confirmPassword, pic } = req.body;
-    // Checking for empty fields
-    if(!name || !email || !password || !confirmPassword  ) {
-        res.status(400);
-        throw new Error("Please Enter all the Feilds.");
-    }
-    // Checking for existing user
-    const userExists = await User.findOne({email});
-    // if User already exist throw an error
-    if(userExists) {
-        res.status(400);
-        throw new Error("Email already registered with another Account.");
-    }
-    // hashed the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // Create new user
-    const newUser = await User.create({
-        name,
-        email,
-        password : hashedPassword,
-        pic
-    });
-    // return response
-    if(newUser) {
-        res.status(201).json({
+    try {
+        const { firstName, lastName, email, password, otp } = req.body;
+        // Confirm OTP
+        const otpRecord = await OTP.findOne({ email, otp });
+        if (!otpRecord) {
+
+            return res.status(400).json({
+                success: false, 
+                message: 'Invalid OTP' 
+            });
+        }
+        // Create new user
+        const name = firstName + " " + lastName;
+        const newUser = await User.create({
+            name,
+            email,
+            password,
+            profilePic: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName}${lastName}`
+        });
+        // Delete OTP record after successful verification
+        await OTP.deleteOne({ email, otp });
+        // return response
+       await mailSender(email, "Wellcome Email", wellcomeMail(firstName));
+        return res.status(201).json({
             id: newUser._id,
             name: newUser.name,
             email: newUser.email
         })
-    } else {
-        res.status(400);
-        throw new Error("Failed to create the User");
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
     }
 });
 
@@ -89,7 +134,6 @@ const loginController = expressAsyncHandler( async(req, res) => {
         return res.status(201).json({
             name: user.name,
             email: user.email,
-            // token
         })
     } catch (error) {
         return res.status(501).json({
@@ -162,6 +206,7 @@ const searchUserController = expressAsyncHandler(async (req, res) => {
 });
 
 module.exports = { 
+    sendOtpController,
     signupController, 
     loginController, 
     searchUserController,

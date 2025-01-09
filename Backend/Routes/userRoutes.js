@@ -4,12 +4,14 @@ const {
     loginController, 
     searchUserController, 
     logoutController, 
-    meController 
+    meController, 
+    sendOtpController
 } = require('../Controllers/userController');
 const auth = require('../Middlewares/authMiddlewares');
 const router = express.Router();
 
 router.route('/').post(signupController).get(auth, searchUserController);
+router.post('/sendOtp', sendOtpController);
 router.post('/login', loginController);
 router.post('/logout', logoutController);
 router.get('/me', meController);

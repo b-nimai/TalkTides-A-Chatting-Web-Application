@@ -1,4 +1,4 @@
-import { HStack, Input, VStack } from '@chakra-ui/react'
+import { Box, Center, HStack, Input, VStack } from '@chakra-ui/react'
 import { Button } from "@/components/ui/button"
 import { PasswordInput } from "@/components/ui/password-input"
 import { Field } from "@/components/ui/field"
@@ -6,18 +6,21 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast';
 import { API_BASE_URL } from '../../config'
+import { PinInput } from "@/components/ui/pin-input"
 
 function Signup({ onSignupSuccess }) {
-    const [name, setName] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [pic, setPic] = useState();
     const [load, setLoad] = useState(false);
+    const [otpSend, isOtpSend] = useState(false);
+    const [otpVal, setOtpVal] = useState(["", "", "", ""]);
 
     
-
-    const submitHandler = async() => {
+    const sendOtp = async()=> {
         setLoad(true);
         // Simple regex for email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -26,8 +29,7 @@ function Signup({ onSignupSuccess }) {
           setLoad(false)
           return;
         }
-
-        if(!name || !email || !password || !confirmPassword ) {
+        if(!firstName || !email || !password || !confirmPassword ) {
             // use toast for "Fill the required fields"
             toast.error("Fill the required fields")
             setEmail("")
@@ -40,13 +42,50 @@ function Signup({ onSignupSuccess }) {
             setLoad(false);
             return;
         }
-        // Call signup api
+        // API call to send otp
         try {
-            const { data } = await axios.post(`${API_BASE_URL}/api/user`, {
-                name,
+            const { data } = await axios.post(`${API_BASE_URL}/api/user/sendOtp`, {
+                firstName,
                 email,
                 password,
                 confirmPassword
+            })
+            // Success toast
+            toast.success("OTP send Success!");
+            isOtpSend(true);
+            setLoad(false);
+        } catch (error) {
+            // Show error toast
+            toast.error(error.response.data.message);
+            setLoad(false);
+        }
+    }
+
+    const submitHandler = async() => {
+        setLoad(true);
+
+        if(!firstName || !email || !password || !confirmPassword ) {
+            // use toast for "Fill the required fields"
+            toast.error("Fill the required fields")
+            setEmail("")
+            setLoad(false);
+            return;
+        }
+        if(password !== confirmPassword) {
+            // use Toast 
+            toast.error("Password and Confirm Password not matched");
+            setLoad(false);
+            return;
+        }
+        const otp = otpVal.join('');
+        // Call signup api
+        try {
+            const { data } = await axios.post(`${API_BASE_URL}/api/user`, {
+                firstName,
+                lastName,
+                email,
+                password,
+                otp
             })
             // Success toast
             toast.success("Signup Success");
@@ -63,6 +102,7 @@ function Signup({ onSignupSuccess }) {
             setLoad(false);
         }
     };
+    
     // Upload image to cloudinary
     // const uploadImage = async (pics) => {
     //     setLoad(true);
@@ -99,74 +139,120 @@ function Signup({ onSignupSuccess }) {
 
   return (
     <VStack p={'2'} color={'black'} >
-        <Field fontSize={'xl'} label="Name: " required>
-            <Input 
-                placeholder='Enter your Name'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                fontSize={'xl'}
-                fontFamily={'Work sans'}
-            />
-        </Field>
+        {!otpSend ? (
+            <>
+                <HStack>
+                    <Field fontSize={'xl'} label="First Name: " required>
+                        <Input 
+                            placeholder='Enter your First Name'
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            fontSize={'xl'}
+                            fontFamily={'Work sans'}
+                        />
+                    </Field>
+                    <Field fontSize={'xl'} label="Last Name: " required>
+                        <Input 
+                            placeholder='Enter your Last Name'
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            fontSize={'xl'}
+                            fontFamily={'Work sans'}
+                        />
+                    </Field>
+                </HStack>
 
-        <Field label="Email: " required>
-            <Input 
-                type='email'
-                placeholder='Enter your Email'
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                fontSize={'xl'}
-                fontFamily={'Work sans'}
-                color={'black'}
-            />
-        </Field>
+                <Field label="Email: " required>
+                    <Input 
+                        type='email'
+                        placeholder='Enter your Email'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        fontSize={'xl'}
+                        fontFamily={'Work sans'}
+                        color={'black'}
+                    />
+                </Field>
 
-        <HStack>
-            <Field label="Password: " required>
-                <PasswordInput 
-                    placeholder='Enter your Password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    fontSize={'xl'}
-                    fontFamily={'Work sans'}
-                />
-            </Field>
+                <HStack>
+                    <Field label="Password: " required>
+                        <PasswordInput 
+                            placeholder='Enter your Password'
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            fontSize={'xl'}
+                            fontFamily={'Work sans'}
+                        />
+                    </Field>
 
-            <Field label="Confirm Password: " required>
-                <PasswordInput 
-                    placeholder='Enter your Password'
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    fontSize={'xl'}
-                    fontFamily={'Work sans'}
-                />
-            </Field>
-        </HStack>
+                    <Field label="Confirm Password: " required>
+                        <PasswordInput 
+                            placeholder='Enter your Password'
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            fontSize={'xl'}
+                            fontFamily={'Work sans'}
+                        />
+                    </Field>
+                </HStack>
 
-        {/* <Field label="Upload Your Picture: ">
-            <Input 
-                type='file'
-                p={1.5}
-                accept='image/*'
-                placeholder='Upload a profile pic'
-                value={pic}
-                onChange={(e) => uploadImage(e.target.files[0])}
-                fontSize={'xl'}
-                fontFamily={'Work sans'}
-            />
-        </Field> */}
+                {/* <Field label="Upload Your Picture: ">
+                    <Input 
+                        type='file'
+                        p={1.5}
+                        accept='image/*'
+                        placeholder='Upload a profile pic'
+                        value={pic}
+                        onChange={(e) => uploadImage(e.target.files[0])}
+                        fontSize={'xl'}
+                        fontFamily={'Work sans'}
+                    />
+                </Field> */}
 
-        <Button 
-            colorScheme={'blue'}
-            width={'50%'}
-            style={{marginTop: 15}}
-            loadingText = "Loading..."
-            loading={load}
-            onClick={submitHandler}
-            colorPalette={"grey"}
-        >
-            Sign Up
-        </Button>
+                <Button 
+                    colorScheme={'blue'}
+                    width={'50%'}
+                    style={{marginTop: 15}}
+                    loadingText = "Loading..."
+                    loading={load}
+                    onClick={sendOtp}
+                    colorPalette={"grey"}
+                >
+                    Sign Up
+                </Button>
+            </>
+        ) : (
+            <>
+                <Field fontSize={'16px'} fontWeight='500' label="Enter OTP: " required>
+                    {/* <Input
+                        placeholder='Enter OTP'
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                        fontSize={'xl'}
+                        fontFamily={'Work sans'}
+                    /> */}
+                    <Center w={'full'} >
+                        <PinInput 
+                            size="lg"
+                            fontSize={'xl'}
+                            fontFamily={'Work sans'}
+                            value={otpVal}
+                            onValueChange={(e) => setOtpVal(e.value)}
+                        />
+                    </Center>
+                </Field>
+                <Button
+                    colorScheme={'green'}
+                    width={'50%'}
+                    style={{ marginTop: 15 }}
+                    loadingText="Loading..."
+                    isLoading={load}
+                    onClick={submitHandler}
+                >
+                    Verify OTP
+                </Button>
+            </>
+        )}
         
     </VStack>
   )
