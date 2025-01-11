@@ -37,7 +37,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     // Connect to socket.io
     useEffect(() => {
         // Initialize socket connection
-        socket = io('wss://talktide-backend.vercel.app', {
+        socket = io('ws://talktide-backend.vercel.app', {
             transports: ['websocket'],
             withCredentials: true,
         });

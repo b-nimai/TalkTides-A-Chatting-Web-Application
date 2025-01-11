@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon Backend/Server.js"
+    "start": "node Backend/Server.js",
+    "dev": "nodemon Backend/Server.js"
   },
   "author": "Nimai Barman",
   "license": "ISC",
