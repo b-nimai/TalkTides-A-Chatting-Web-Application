@@ -74,7 +74,7 @@ function Login() {
           Login
         </Button>
 
-        <Button 
+        {/* <Button 
           variant="solid"
           colorScheme='red'
           width={'80%'}
@@ -84,7 +84,7 @@ function Login() {
           }}
         >
           Get Guest User Credentials
-        </Button>
+        </Button> */}
         
     </VStack>
   )
