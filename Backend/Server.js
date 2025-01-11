@@ -53,6 +53,9 @@ app.use(errorHandler);
 // For production (Vercel) create server with Socket.IO
 const server = createServer(app);
 
+// For development
+// const server = app.listen(5000);
+
 // Initialize Socket.IO and bind it to the HTTP server
 const io = new Server(server, {
     pingTimeout: 60000, // Adjust ping timeout if needed
@@ -64,7 +67,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-    console.log("Connected to Socket.io, id:", socket.id);
+    // console.log("Connected to Socket.io, id:", socket.id);
 
     socket.on("setup", (userData) => {
         socket.join(userData?._id);
