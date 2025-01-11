@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useChatState } from '../Context/ChatProvider';
 import { Box, Input, Spinner, Text } from '@chakra-ui/react';
 import { Button } from "@/components/ui/button"
@@ -41,14 +41,20 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             transports: ['websocket'],
             withCredentials: true,
         });
+
         socket.emit("setup", user);
         socket.on('Connected', () => setSocketConnected(true));
         socket.on("typing", () => setIsTyping(true));
         socket.on("stop typing", () => setIsTyping(false));
-    }, []);
+        // Cleanup on component unmount to disconnect socket
+        return () => {
+            socket.emit("disconnect");
+            socket.off();
+        }
+    }, [user]);
 
     // Fetch messages handler
-    const fetchMessageHanlder = async() => {
+    const fetchMessageHanlder = useCallback(async() => {
         if(!selectedChat) return;
         try {
             setLoading(true);
@@ -63,12 +69,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             toast.error("Failed to load message!");
             setLoading(false);
         }
-    }
+    }, [selectedChat]);
 
     useEffect(() => {
         fetchMessageHanlder();
         selectedChatCompare = selectedChat;
-    }, [selectedChat]);
+    }, [selectedChat, fetchMessageHanlder]);
 
     // Checking if new message received
     useEffect(() => {
@@ -83,10 +89,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 }
             }
             else {
-                setMessages([...messages, newMessageRecived]);
+                setMessages((prevMessages) => [...prevMessages, newMessageRecived]);
             }
-        })
-    })
+        });
+        return () => socket.off("message received");
+    }, [notification, selectedChatCompare, fetchAgain, setNotification, setFetchAgain])
 
 
     // Send Message Handler
@@ -103,7 +110,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 })
                 socket.emit("new message", data);
                 setNewMessage("");
-                setMessages([...messages, data]);
+                setMessages((prevMessages) => [...prevMessages, data]);
                 // toast.success("Message send.")
             } catch (error) {
                 toast.error("Failer to send message, try again.")
@@ -124,7 +131,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 
                 socket.emit("new message", data);
                 setNewMessage("");
-                setMessages([...messages, data]);
+                setMessages((prevMessages) => [...prevMessages, data]);
                 toast.success("Message Send.")
             } catch (error) {
                 toast.error("Failer to send message, try again.")
