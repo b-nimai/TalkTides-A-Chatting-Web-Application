@@ -126,7 +126,7 @@ const loginController = expressAsyncHandler( async(req, res) => {
         res.cookie("authToken", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',  // Set this to true if you're on HTTPS
-            sameSite: 'lax', // Required for cross-origin requests
+            sameSite: 'None', // "None" for cross orgin, otherwise "lax"
             maxAge: 24 * 60 * 60 * 1000 // 1 day
         });
 
