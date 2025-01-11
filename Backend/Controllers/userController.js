@@ -176,8 +176,8 @@ const updateProfileController = expressAsyncHandler( async(req, res) => {
 const logoutController = expressAsyncHandler( async(req, res) => {
     res.clearCookie('authToken', {
         httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'None',
     });
     res.status(200).send({ message: 'Logged out successfully' });
 });

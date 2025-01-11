@@ -59,7 +59,7 @@ function SideDrawer({ fetchAgain, setFetchAgain }) {
             withCredentials: true
           }
         );
-        SetisLoggedin('false');
+        SetisLoggedin(false);
         navigate('/');
       } catch (error) {
         toast.error("Failed to logout.");
