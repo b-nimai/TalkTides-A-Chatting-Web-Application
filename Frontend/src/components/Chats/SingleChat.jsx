@@ -37,7 +37,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     // Connect to socket.io
     useEffect(() => {
         // Initialize socket connection
-        socket = io('ws://talktide-backend.vercel.app', {
+        socket = io('https://talktide-backend.vercel.app', {
             transports: ['websocket'],
             withCredentials: true,
         });
@@ -48,7 +48,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         socket.on("stop typing", () => setIsTyping(false));
         // Cleanup on component unmount to disconnect socket
         return () => {
-            socket.disconnect();
+            // socket.disconnect();
             socket.off();
         }
     }, [user]);

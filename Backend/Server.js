@@ -97,16 +97,16 @@ io.on("connection", (socket) => {
     });
 });
 
-// // Vercel specific export for serverless functions
-// module.exports = (req, res) => {
-//     if (req.url.startsWith('/socket.io')) {
-//         io.httpServer.emit('request', req, res);
-//     } else {
-//         app(req, res);
-//     }
-// };
+// Vercel specific export for serverless functions
+module.exports = (req, res) => {
+    if (req.url.startsWith('/socket.io')) {
+        io.httpServer.emit('request', req, res);
+    } else {
+        app(req, res);
+    }
+};
 
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-    console.log(`Server is running on port: ${PORT}`);
-})
+// const PORT = process.env.PORT || 5000;
+// server.listen(PORT, () => {
+//     console.log(`Server is running on port: ${PORT}`);
+// })
