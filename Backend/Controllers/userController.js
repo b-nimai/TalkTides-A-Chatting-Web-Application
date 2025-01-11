@@ -61,12 +61,12 @@ const signupController = expressAsyncHandler(async (req, res) => {
             });
         }
         // Create new user
-        const name = firstName + " " + lastName;
+        const name = firstName.trim() + " " + lastName.trim();
         const newUser = await User.create({
             name,
             email,
             password,
-            profilePic: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName}${lastName}`
+            profilePic: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`
         });
         // Delete OTP record after successful verification
         await OTP.deleteOne({ email, otp });
@@ -144,6 +144,34 @@ const loginController = expressAsyncHandler( async(req, res) => {
     }
 })
 
+// Update Profile Controller
+const updateProfileController = expressAsyncHandler( async(req, res) => {
+    const { userId, pic, bio } = req.body;
+    try {
+        // find the user by userId
+        const user = await User.findById(userId).exec();
+        console.log("user:", user)
+        // if user not found then throw an error
+        if(!user) {
+            throw new Error("User not found.");
+        }
+        if(pic) {
+            user.profilePic = pic;
+        }
+        if(bio) {
+            user.Bio = bio;
+        }
+        const updatedUser = await user.save();
+        updatedUser.password = undefined;
+        return res.status(200).json(updatedUser);
+    } catch (error) {
+        return res.status(501).json({
+            success: false,
+            message: error.message
+        })
+    }
+});
+
 // Logout controller
 const logoutController = expressAsyncHandler( async(req, res) => {
     res.clearCookie('authToken', {
@@ -211,5 +239,6 @@ module.exports = {
     loginController, 
     searchUserController,
     logoutController,
-    meController
+    meController,
+    updateProfileController
 };

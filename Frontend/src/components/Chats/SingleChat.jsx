@@ -12,6 +12,7 @@ import ScrollableChat from './ScrollableChat';
 import io from 'socket.io-client'
 import Lottie from 'react-lottie'
 import animationData from '../../animations/typing.json'
+import SenderProfile from './SenderProfile';
 
 let socket, selectedChatCompare;
 
@@ -177,11 +178,27 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                         !selectedChat.isGroupChat ? (
                             <>
                                {getSender(user, selectedChat.users)} 
-                               <ProfileModal user={getSenderFull(user, selectedChat.users)}>
-                                    <Button>
-                                        <i className="fa-solid fa-user"></i>
+                               <SenderProfile user={getSenderFull(user, selectedChat.users)}>
+                                    <Button
+                                        display="flex"
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        borderRadius="50%" // Make the button circular
+                                        overflow="hidden"  // Ensure the image does not overflow
+                                        width="50px"       // Set the desired width
+                                        height="50px"      // Set the desired height
+                                        padding="0" 
+                                    >
+                                        <img 
+                                            src={getSenderFull(user, selectedChat.users).profilePic}
+                                            style={{
+                                                width: "100%",   // Make the image fill the button
+                                                height: "100%",  // Ensure the image covers the button area
+                                                objectFit: "cover"
+                                            }}
+                                        />
                                     </Button>
-                                </ProfileModal>
+                                </SenderProfile>
                             </>
                         ) : (
                             <>

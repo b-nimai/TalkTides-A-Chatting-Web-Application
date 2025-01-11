@@ -5,7 +5,8 @@ const {
     searchUserController, 
     logoutController, 
     meController, 
-    sendOtpController
+    sendOtpController,
+    updateProfileController
 } = require('../Controllers/userController');
 const auth = require('../Middlewares/authMiddlewares');
 const router = express.Router();
@@ -15,6 +16,7 @@ router.post('/sendOtp', sendOtpController);
 router.post('/login', loginController);
 router.post('/logout', logoutController);
 router.get('/me', meController);
+router.put('/update', updateProfileController);
 
 
 module.exports = router;

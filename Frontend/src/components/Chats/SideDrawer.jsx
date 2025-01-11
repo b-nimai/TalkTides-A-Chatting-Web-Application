@@ -173,10 +173,6 @@ function SideDrawer({ fetchAgain, setFetchAgain }) {
                     <MenuItem 
                       key={notify._id}
                       // onClick={()=> {
-                      //   if (!notify.chat) {
-                      //     toast.error("Chat data not available!");
-                      //     return;
-                      //   }
                       //   setSelectedChat(notify.chat);
                       // }}
                     >
@@ -198,7 +194,7 @@ function SideDrawer({ fetchAgain, setFetchAgain }) {
                 </button>
               </MenuTrigger>
               <MenuContent>
-                <ProfileModal user={user}>
+                <ProfileModal>
                   <MenuItem value="new-txt">My Profile</MenuItem>
                 </ProfileModal>
                 <MenuItem onClick={logOutHandler}>Log Out</MenuItem>

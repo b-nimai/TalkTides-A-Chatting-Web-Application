@@ -24,7 +24,7 @@ const fetchNotificationController = expressAsyncHandler(async(req, res) => {
 const markAsReadController = expressAsyncHandler(async (req, res) => {
     const { notificationId } = req.body;
     try {
-        await Notification.findByIdAndUpdate(notificationId, {isRead: true});
+        await Notification.findByIdAndDelete(notificationId, {isRead: true});
         return res.status(200).json({
             success: true,
             message: "Notification mark as read"

@@ -50,8 +50,12 @@ app.use('/api/notification', notificationRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-const port = process.env.PORT || 5000
-const server = app.listen(port, console.log(`Server started at port ${port}`));
+// for Development
+// const port = process.env.PORT || 5000
+// const server = app.listen(port, console.log(`Server started at port ${port}`));
+
+// For production
+const server = createServer(app);
 
 // Initialize Socket.IO and bind it to the HTTP server
 const io = new Server(server, {
@@ -94,4 +98,12 @@ io.on("connection", (socket) => {
     })
 })
 
-// module.exports = app;
+// For Production
+// Export the app as a serverless function for Vercel
+module.exports = (req, res) => {
+    if (req.url.startsWith('/socket.io')) {
+        io.httpServer.emit('request', req, res);
+    } else {
+        app(req, res);
+    }
+};

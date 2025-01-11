@@ -14,12 +14,11 @@ function Signup({ onSignupSuccess }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [pic, setPic] = useState();
     const [load, setLoad] = useState(false);
     const [otpSend, isOtpSend] = useState(false);
     const [otpVal, setOtpVal] = useState(["", "", "", ""]);
 
-    
+    // Send otp 
     const sendOtp = async()=> {
         setLoad(true);
         // Simple regex for email validation
@@ -80,7 +79,7 @@ function Signup({ onSignupSuccess }) {
         const otp = otpVal.join('');
         // Call signup api
         try {
-            const { data } = await axios.post(`${API_BASE_URL}/api/user`, {
+            await axios.post(`${API_BASE_URL}/api/user`, {
                 firstName,
                 lastName,
                 email,
@@ -91,11 +90,12 @@ function Signup({ onSignupSuccess }) {
             toast.success("Signup Success");
             setLoad(false);
             onSignupSuccess();
-            setName("")
+            setFirstName("")
+            setLastName("")
             setEmail("")
             setPassword("")
             setConfirmPassword("")
-            setPic("")
+            setOtpVal(["", "", "", ""]);
         } catch (error) {
             // Show error toast
             toast.error(error.response.data.message);
@@ -103,40 +103,7 @@ function Signup({ onSignupSuccess }) {
         }
     };
     
-    // Upload image to cloudinary
-    // const uploadImage = async (pics) => {
-    //     setLoad(true);
-    //     if(pics == undefined) {
-    //         // use toast
-    //         toast.error("Please upload an image")
-    //         setLoad(false);
-    //         return;
-    //     }
-    //     if(pics.type === 'image/jpeg' || pics.type == "image/png") {
-    //         const formData = new FormData();
-    //         formData.append("file", pics);
-    //         formData.append("upload_preset", "Talk_Tide_ChatApp");
-    //         formData.append("cloud_name", "dvvznsplk"); 
-
-    //         try {
-    //             const response = await fetch("https://api.cloudinary.com/v1_1/dvvznsplk/image/upload", {
-    //               method: "POST",
-    //               body: formData
-    //             });
-    //             const data = await response.json();
-                
-    //             if (data.secure_url) {
-    //               setPic(data.secure_url.toString());
-    //               console.log(data.secure_url.toString());
-    //               setLoad(false);
-    //             }
-    //         } catch (error) {
-    //             console.error("Error uploading image:", error);
-    //             setLoad(false);
-    //         }
-    //     }
-    // }
-
+    
   return (
     <VStack p={'2'} color={'black'} >
         {!otpSend ? (
@@ -213,7 +180,7 @@ function Signup({ onSignupSuccess }) {
                     colorScheme={'blue'}
                     width={'50%'}
                     style={{marginTop: 15}}
-                    loadingText = "Loading..."
+                    loadingText = "Signing up..."
                     loading={load}
                     onClick={sendOtp}
                     colorPalette={"grey"}
@@ -245,8 +212,8 @@ function Signup({ onSignupSuccess }) {
                     colorScheme={'green'}
                     width={'50%'}
                     style={{ marginTop: 15 }}
-                    loadingText="Loading..."
-                    isLoading={load}
+                    loadingText = "verifing..."
+                    loading={load}
                     onClick={submitHandler}
                 >
                     Verify OTP
