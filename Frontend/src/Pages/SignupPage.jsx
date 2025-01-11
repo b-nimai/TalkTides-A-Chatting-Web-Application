@@ -6,6 +6,7 @@ import Signup from '../components/Authentication/Signup'
 import Login from '../components/Authentication/Login'
 import { useChatState } from '../components/Context/ChatProvider'
 import { useNavigate } from 'react-router-dom'
+import Logo from '../assets/Logo.jpg'
 
 function SignupPage() {
   const { isLoggedin } = useChatState();
@@ -34,14 +35,28 @@ function SignupPage() {
         borderWidth={1}
       
       >
-        <Text 
-          fontSize='3xl' 
-          color={'rgba(255, 255, 255)'} 
-          fontFamily={'Work sans'}
-          textAlign={'center'}
-        >
-          TalkTides
-        </Text>
+        <Box display={'flex'} gap={2} alignItems={'center'} justifyContent={'center'}>
+          <Text 
+            fontSize='3xl' 
+            color={'rgba(255, 255, 255)'} 
+            fontFamily={'Work sans'}
+            textAlign={'center'}
+          >
+            TalkTides
+          </Text>
+          <Box 
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            borderRadius="50%" // Make the button circular
+            overflow="hidden"  // Ensure the image does not overflow
+            width="11"       // Set the desired width
+            height="11"      // Set the desired height
+            padding="0"
+          >
+            <img src={Logo}/>
+          </Box>
+        </Box>
       </Box>
       <Box
         backgroundColor="rgba(255, 255, 255, 0.5)"

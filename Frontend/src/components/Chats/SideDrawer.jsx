@@ -29,6 +29,7 @@ import ResultLoading from './ResultLoading'
 import UserListItem from './UserListItem'
 import { API_BASE_URL } from '../../config'
 import { getSender } from './GetSender'
+import Logo from '../../assets/Logo.jpg'
 // import Badge from 'react-badges'
 
 function SideDrawer({ fetchAgain, setFetchAgain }) {
@@ -134,10 +135,23 @@ function SideDrawer({ fetchAgain, setFetchAgain }) {
                 </Text>
             </Button>
         </Tooltip>
-
+        <Box display={'flex'} >
         <Text fontSize={'2xl'} fontFamily={'Work sans'} color={'black'} fontWeight={'bold'}>
             TalkTides
         </Text>
+        <Box 
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          borderRadius="50%" // Make the button circular
+          overflow="hidden"  // Ensure the image does not overflow
+          width="10"       // Set the desired width
+          height="10"      // Set the desired height
+          padding="0"
+        >
+          <img src={Logo}/>
+        </Box>
+        </Box>
 
         <Box 
             display={'flex'}
