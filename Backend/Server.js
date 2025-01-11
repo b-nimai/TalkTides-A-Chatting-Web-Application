@@ -9,6 +9,7 @@ const notificationRoutes = require('./Routes/notificationRoutes.js');
 const { notFound, errorHandler } = require("./Middlewares/errorMiddlewares.js");
 const cookieParser = require("cookie-parser");
 const { Server } = require('socket.io');
+const { createServer } = require('http');
 
 
 const app = express();

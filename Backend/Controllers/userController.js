@@ -34,7 +34,7 @@ const sendOtpController = expressAsyncHandler(async (req, res) => {
             email,
             otp
         })
-        await mailSender(email, "OTP Verification Email", otpTemplate(otp));
+        await mailSender(email, "OTP Verification for Signup", otpTemplate(otp));
         return res.status(201).json({
             success: true,
             message: "OTP Send successfull."
@@ -71,7 +71,7 @@ const signupController = expressAsyncHandler(async (req, res) => {
         // Delete OTP record after successful verification
         await OTP.deleteOne({ email, otp });
         // return response
-       await mailSender(email, "Wellcome Email", wellcomeMail(firstName));
+       await mailSender(email, "Wellcome To TalkTides", wellcomeMail(firstName));
         return res.status(201).json({
             id: newUser._id,
             name: newUser.name,

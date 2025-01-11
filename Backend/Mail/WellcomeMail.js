@@ -78,9 +78,9 @@ const wellcomeMail = (name) => {
 	
 	<body>
 		<div class="container">
-			<div class="message">Welcome to TaskTides, ${name}!</div>
+			<div class="message">Welcome to TalkTides, ${name}!</div>
 			<div class="body">
-				<p>We’re excited to have you join TaskTides, the ultimate platform for seamless communication and connecting with others. Here’s how to get started:</p>
+				<p>We’re excited to have you join TalkTides, the ultimate platform for seamless communication and connecting with others. Here’s how to get started:</p>
 
         		<h2>Getting Started</h2>
                 <div class="point">
@@ -117,7 +117,7 @@ const wellcomeMail = (name) => {
             <div>
                 <p>Sincerely,</p>
 
-                <p>The ChatTide Team</p>
+                <p>The TalkTides Team</p>
             </div>
 			<div class="support">For any assistance, please feel free to reach out to us at 
 				<a href="mailto:officialnill2000@gmail.com">officialnill2000@gmail.com</a>. We are here to help!</div>
