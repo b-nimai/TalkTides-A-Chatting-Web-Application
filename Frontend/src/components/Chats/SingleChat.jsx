@@ -38,6 +38,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     useEffect(() => {
         // Initialize socket connection
         socket = io(API_BASE_URL, {
+            transports: ['websocket'],
             withCredentials: true,
         });
         socket.emit("setup", user);
