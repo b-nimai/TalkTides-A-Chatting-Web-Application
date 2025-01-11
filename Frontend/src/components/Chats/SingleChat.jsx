@@ -9,7 +9,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import {API_BASE_URL} from '../../config'
 import ScrollableChat from './ScrollableChat';
-import io from 'socket.io-client'
+import {io} from 'socket.io-client'
 import Lottie from 'react-lottie'
 import animationData from '../../animations/typing.json'
 import SenderProfile from './SenderProfile';
@@ -37,7 +37,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     // Connect to socket.io
     useEffect(() => {
         // Initialize socket connection
-        socket = io(API_BASE_URL, {
+        socket = io('wss://talktide-backend.vercel.app', {
             transports: ['websocket'],
             withCredentials: true,
         });
