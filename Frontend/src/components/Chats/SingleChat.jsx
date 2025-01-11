@@ -103,7 +103,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 socket.emit("new message", data);
                 setNewMessage("");
                 setMessages([...messages, data]);
-                toast.success("Message send.")
+                // toast.success("Message send.")
             } catch (error) {
                 toast.error("Failer to send message, try again.")
             }

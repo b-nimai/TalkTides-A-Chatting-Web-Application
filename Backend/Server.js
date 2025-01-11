@@ -63,6 +63,7 @@ const io = new Server(server, {
     pingTimeout: 60000, // Adjust ping timeout if needed
     cors: {
         origin: allowedOrigins,
+        methods: ["GET", "POST"],
         credentials: true
     }
 });
