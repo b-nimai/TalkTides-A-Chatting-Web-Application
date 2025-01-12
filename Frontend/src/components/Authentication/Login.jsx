@@ -48,6 +48,11 @@ function Login() {
   const sendOTP = async () => {
     setLoad(true);
     // Simple regex for email validation
+    if(!email) {
+      toast.error("Enter email first!");
+      setLoad(false);
+      return;
+    }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (email && !emailRegex.test(email)) {
       toast.error("Please enter a valid email address.");
