@@ -98,7 +98,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
     // Send Message Handler
     const sendMessageHandler = async(event) => {
-        if(!newMessage.trim()) return;
+        if(!newMessage.trim()) {
+            setNewMessage("");
+            return;
+        }
         if(event.key === "Enter" && newMessage.trim()) {
             event.preventDefault();
             socket.emit("stop typing", selectedChat._id);
@@ -114,6 +117,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 setMessages((prevMessages) => [...prevMessages, data]);
                 // toast.success("Message send.")
             } catch (error) {
+                setNewMessage("");
                 toast.error("Failer to send message, try again.")
             }
         }
@@ -135,6 +139,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 setMessages((prevMessages) => [...prevMessages, data]);
                 toast.success("Message Send.")
             } catch (error) {
+                setNewMessage("");
                 toast.error("Failer to send message, try again.")
             }
         }
@@ -223,7 +228,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 </Text>
                 <Box
                     display={"flex"} flexDirection={'column'} justifyContent={'flex-end'}
-                    p={3} bg={"rgba(232, 232, 232, 0.5)"} w={'100%'} h={'100%'} borderRadius={'lg'}
+                    p={1} bg={"rgba(232, 232, 232, 0.5)"} w={'100%'} h={'100%'} borderRadius={'lg'}
                     overflowY={'hidden'}
                 >
                     {/* Messages Here */}
