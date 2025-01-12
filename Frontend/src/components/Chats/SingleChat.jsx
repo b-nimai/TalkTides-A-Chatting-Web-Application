@@ -266,6 +266,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                 zIndex={1000}
                             >
                                 <Textarea 
+                                    ref={textareaRef}
                                     bg={"rgba(255, 255, 255, 1)"}
                                     placeholder='Type your message...'
                                     value={newMessage}
