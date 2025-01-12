@@ -47,6 +47,36 @@ const sendOtpController = expressAsyncHandler(async (req, res) => {
     }
 })
 
+const sendOtpController2 = expressAsyncHandler(async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        // Checking for existing user
+        const userExists = await User.findOne({email});
+        // if User already exist throw an error
+        if(!userExists) {
+            res.status(404);
+            throw new Error("User Not Found.");
+        }
+        // Generate OTP
+        const otp = crypto.randomInt(1000, 9999).toString();
+        await OTP.create({
+            email,
+            otp
+        })
+        await mailSender(email, "OTP Verification", otpTemplate(otp));
+        return res.status(201).json({
+            success: true,
+            message: "OTP Send successfull."
+        })
+    } catch (error) {
+        return res.status(511).json({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
 // Singup Controller
 const signupController = expressAsyncHandler(async (req, res) => {
     try {
@@ -172,6 +202,30 @@ const updateProfileController = expressAsyncHandler( async(req, res) => {
     }
 });
 
+// Reset Password Controller
+const resetPasswordHandler = expressAsyncHandler(async (req, res) => {
+    try {
+        const { email, password, otp } = req.body;
+        const otpRecord = await OTP.findOne({email, otp});
+        if(!otpRecord) {
+            throw new Error("Invalid OTP!");
+        }
+        const user = await User.findOne({email});
+        user.password = password;
+        await user.save();
+        await OTP.deleteOne({email, otp});
+        return res.status(200).json({
+            success: true,
+            message: "Password updated successfully."
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
 // Logout controller
 const logoutController = expressAsyncHandler( async(req, res) => {
     res.clearCookie('authToken', {
@@ -235,10 +289,12 @@ const searchUserController = expressAsyncHandler(async (req, res) => {
 
 module.exports = { 
     sendOtpController,
+    sendOtpController2,
     signupController, 
     loginController, 
     searchUserController,
     logoutController,
     meController,
-    updateProfileController
+    updateProfileController,
+    resetPasswordHandler
 };

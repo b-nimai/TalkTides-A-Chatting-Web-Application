@@ -191,13 +191,6 @@ function Signup({ onSignupSuccess }) {
         ) : (
             <>
                 <Field fontSize={'16px'} fontWeight='500' label="Enter OTP: " required>
-                    {/* <Input
-                        placeholder='Enter OTP'
-                        value={otp}
-                        onChange={(e) => setOtp(e.target.value)}
-                        fontSize={'xl'}
-                        fontFamily={'Work sans'}
-                    /> */}
                     <Center w={'full'} >
                         <PinInput 
                             size="lg"

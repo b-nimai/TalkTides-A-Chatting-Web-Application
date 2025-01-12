@@ -256,7 +256,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                     placeholder='Enter message here...'
                                     value={newMessage}
                                     onChange={typingHandler}
-                                    onBlur={() => setNewMessage((prev) => prev.trim())}
                                 />
                                 <Button 
                                     onClick={sendMessageHandlerWithButton}
