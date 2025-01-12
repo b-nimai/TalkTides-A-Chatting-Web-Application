@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useChatState } from '../Context/ChatProvider';
-import { Box, Input, Spinner, Text } from '@chakra-ui/react';
+import { Box, Input, Spinner, Text, Textarea } from '@chakra-ui/react';
 import { Button } from "@/components/ui/button"
 import { getSender, getSenderFull } from './GetSender';
 import ProfileModal from './ProfileModal';
@@ -98,6 +98,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
     // Send Message Handler
     const sendMessageHandler = async(event) => {
+        if(!newMessage.trim()) return;
         if(event.key === "Enter" && newMessage.trim()) {
             event.preventDefault();
             socket.emit("stop typing", selectedChat._id);
@@ -245,17 +246,28 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             {isTyping && <div>
                                 <Lottie
                                     options={defaultOptions}
-                                    width={40}
+                                    width={20}
                                     style={{marginBottom: 0, marginLeft: 0}} 
                                 />
                             </div>}
-                            <Box display={'flex'} gap={1}>
-                                <Input 
-                                    variant={'filled'}
+                            <Box 
+                                display={'flex'} gap={1} alignItems={'center'}
+                                position='sticky'
+                                buttom={0}
+                                zIndex={1000}
+                            >
+                                <Textarea 
                                     bg={"rgba(255, 255, 255, 1)"}
-                                    placeholder='Enter message here...'
+                                    placeholder='Type your message...'
                                     value={newMessage}
                                     onChange={typingHandler}
+                                    size={'sm'}
+                                    rows={1}
+                                    flex='1'
+                                    resize={'none'}
+                                    maxHeight='200px'
+                                    // overflow={'hidden'}
+                                    _focus={{outline: 'none'}}
                                 />
                                 <Button 
                                     onClick={sendMessageHandlerWithButton}
