@@ -24,6 +24,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const [socketConnected, setSocketConnected] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
     const [typing, setTyping] = useState(false);
+    const textareaRef = useRef(null);
 
     // Lottie Option
     const defaultOptions = {
@@ -116,6 +117,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 setNewMessage("");
                 setMessages((prevMessages) => [...prevMessages, data]);
                 // toast.success("Message send.")
+                textareaRef.current?.focus();
             } catch (error) {
                 setNewMessage("");
                 toast.error("Failer to send message, try again.")
@@ -123,7 +125,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         }
     };
 
-    const sendMessageHandlerWithButton = async() => {
+    const sendMessageHandlerWithButton = async(e) => {
+        e.preventDefault();
         if(newMessage.trim()) {
             socket.emit("stop typing", selectedChat._id);
             try {
@@ -137,7 +140,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 socket.emit("new message", data);
                 setNewMessage("");
                 setMessages((prevMessages) => [...prevMessages, data]);
-                toast.success("Message Send.")
+                // toast.success("Message Send.")
+                textareaRef.current?.focus();
             } catch (error) {
                 setNewMessage("");
                 toast.error("Failer to send message, try again.")
