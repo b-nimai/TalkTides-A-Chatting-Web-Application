@@ -13,7 +13,7 @@ const mailSender = async (email, sub, body)=> {
     })
 
     const mailOptions = {
-      from: 'officialnill2000@gmail.com',
+      from: 'inquiriestides@gmail.com',
       to: `${email}`,
       subject: `${sub}`,
       html: `${body}`,

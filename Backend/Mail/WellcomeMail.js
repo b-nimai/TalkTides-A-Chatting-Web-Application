@@ -4,7 +4,7 @@ const wellcomeMail = (name) => {
 	
 	<head>
 		<meta charset="UTF-8">
-		<title>Welcome Email</title>
+		<title>Welcome To TalkTides</title>
 		<style>
 			body {
 				background-color: #ffffff;
@@ -120,7 +120,7 @@ const wellcomeMail = (name) => {
                 <p>The TalkTides Team</p>
             </div>
 			<div class="support">For any assistance, please feel free to reach out to us at 
-				<a href="mailto:officialnill2000@gmail.com">officialnill2000@gmail.com</a>. We are here to help!</div>
+				<a href="mailto:inquiriestides@gmail.com">inquiriestides@gmail.com</a>. We are here to help!</div>
 			</div>
 	</body>
 	
