@@ -280,7 +280,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                     _focus={{outline: 'none'}}
                                 />
                                 <Button 
-                                    onMouseDown={(e) = e.preventDefault()}
+                                    onMouseDown={(e) => e.preventDefault()}
                                     onClick={sendMessageHandlerWithButton}
                                 >
                                     <i className="fa-regular fa-paper-plane"></i>
