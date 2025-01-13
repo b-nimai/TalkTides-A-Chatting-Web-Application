@@ -20,6 +20,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const { user, setSelectedChat, selectedChat, notification, setNotification } = useChatState();
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [load, setLoad] = useState(false);
     const [newMessage, setNewMessage] = useState("");
     const [socketConnected, setSocketConnected] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
@@ -101,9 +102,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const sendMessageHandler = async(event) => {
         if(!newMessage.trim()) {
             setNewMessage("");
+            setLoad(false);
             return;
         }
         if(event.key === "Enter" && newMessage.trim()) {
+            setLoad(true);
             event.preventDefault();
             socket.emit("stop typing", selectedChat._id);
             try {
@@ -118,14 +121,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 setMessages((prevMessages) => [...prevMessages, data]);
                 // toast.success("Message send.")
                 textareaRef.current?.focus();
+                setLoad(false);
             } catch (error) {
                 setNewMessage("");
+                setLoad(false);
                 toast.error("Failer to send message, try again.")
             }
         }
     };
 
     const sendMessageHandlerWithButton = async(e) => {
+        setLoad(true);
         e.preventDefault();
         if(newMessage.trim()) {
             socket.emit("stop typing", selectedChat._id);
@@ -142,8 +148,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 setMessages((prevMessages) => [...prevMessages, data]);
                 // toast.success("Message Send.")
                 textareaRef.current?.focus();
+                setLoad(false);
             } catch (error) {
                 setNewMessage("");
+                setLoad(false);
                 toast.error("Failer to send message, try again.")
             }
         }
@@ -280,6 +288,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                                     _focus={{outline: 'none'}}
                                 />
                                 <Button 
+                                    loading={load}
                                     onMouseDown={(e) => e.preventDefault()}
                                     onClick={sendMessageHandlerWithButton}
                                 >
