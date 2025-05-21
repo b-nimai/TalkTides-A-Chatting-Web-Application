@@ -109,7 +109,7 @@ Feel free to fork the repository and submit a pull request.
 ---
 
 ## 📧 Contact
-
+```
 Built with ❤️ by **Nimai Barman**
 📨 Email: [nimaibarman4978@gmail.com](mailto:nimaibarman4978@gmail.com)
 
