@@ -6,7 +6,7 @@
 
 ### Frontend
 - **React.js** with **Vite**
-- **CSS** for styling
+- **ChakraUI** for styling & UI components
 - **Axios** for HTTP requests
 - **Lottie** animations
 
@@ -18,7 +18,8 @@
 - **Socket.io** for real-time messaging
 
 ### Deployment
-- **Vercel** (frontend and backend)
+- **Frontend** in **Vercel**
+- **Backend** in **Render**
 
 ---
 
@@ -81,18 +82,17 @@ MAIL_PASS = your_email_password
 ```
 
 ### Backend Setup
-
 ```bash
 cd Backend
 npm install
 npm run dev
-
+```
 ### Frontend Setup
 ```bash
 cd Frontend
 npm install
 npm run dev
-
+```
 ### 🌍 Live Demo
 
 [Try TalkTides Live](https://talktide-nill.vercel.app)
