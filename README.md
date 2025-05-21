@@ -95,7 +95,7 @@ npm run dev
 ```
 ### 🌍 Live Demo
 
-[Try TalkTides Live](https://talktide-nill.vercel.app)
+-[Try TalkTides Live](https://talktide-nill.vercel.app)
 
 
 
