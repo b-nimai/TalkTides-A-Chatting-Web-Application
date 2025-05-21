@@ -39,23 +39,23 @@
 ```
 TalkTides-A-Chatting-Web-Application-main/
 ├── Backend/
-│ ├── Config/ # DB configuration
-│ ├── Controllers/ # Logic for users, chat, messages
-│ ├── Mail/ # Email templates and sender
-│ ├── Middlewares/ # Error and Auth handlers
-│ ├── Routes/ # Express API routes
-│ ├── Schema/ # MongoDB Schemas
-│ └── Server.js # Entry point for backend
+│   ├── Config/             # DB configuration
+│   ├── Controllers/        # Logic for users, chat, messages
+│   ├── Mail/               # Email templates and sender
+│   ├── Middlewares/        # Error and Auth handlers
+│   ├── Routes/             # Express API routes
+│   ├── Schema/             # MongoDB Schemas
+│   └── Server.js           # Entry point for backend
 ├── Frontend/
-│ ├── public/ # Static assets
-│ ├── src/
-│ │ ├── Pages/ # Chat and Signup pages
-│ │ ├── assets/ # Images and icons
-│ │ ├── animations/ # Lottie files
-| | └── components / # Various components
-| ├── App.jsx # Application Setup
-│ └── main.jsx # App entry point
-├── .env # Envrionments file
+│   ├── public/             # Static assets
+│   |── src/
+│   |   ├── Pages/          # Chat and Signup pages
+│   |   ├── assets/         # Images and icons
+│   |   ├── animations/     # Lottie files
+│   |   └── components/     # Various components
+│   ├── App.jsx             # Application setup
+│   └── main.jsx            # App entry point
+├── .env                    # Environment variables file
 ├── package.json
 └── README.md
 ```
@@ -93,14 +93,24 @@ cd Frontend
 npm install
 npm run dev
 ```
-### 🌍 Live Demo
 
--[Try TalkTides Live](https://talktide-nill.vercel.app)
+---
+## 🌍 Live Demo
 
+👉 [Try TalkTides Live](https://talktide-nill.vercel.app)
 
+---
 
-###🤝 Contributing
-- Contributions, suggestions, and improvements are welcome! Feel free to fork the repository and submit a pull request.
+## 🤝 Contributing
 
-###📧 Contact
-- Built with ❤️ by [Nimai Barman] – [nimaibarman4978@gmail.com](mailto:nimaibarman4978@gmail.com)
+Contributions, suggestions, and improvements are welcome!
+Feel free to fork the repository and submit a pull request.
+
+---
+
+## 📧 Contact
+
+Built with ❤️ by **Nimai Barman**
+📨 Email: [nimaibarman4978@gmail.com](mailto:nimaibarman4978@gmail.com)
+
+```
