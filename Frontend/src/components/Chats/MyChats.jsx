@@ -107,11 +107,11 @@ function MyChats({ fetchAgain, setFetchAgain }) {
                       setFetchAgain(!fetchAgain);
                     });
                     // Update notifications  state for the selected chat
-                    setNotification((prev) =>
-                      prev.map((n) =>
-                        n.chat._id === chat._id ? { ...n, isRead: true } : n
-                      )
-                    );
+                    // setNotification((prev) =>
+                    //   prev.map((n) =>
+                    //     n.chat._id === chat._id ? { ...n, isRead: true } : n
+                    //   )
+                    // );
                   }}
                   cursor={'pointer'} 
                   bg={selectedChat === chat ? 'cyan.300' : 'cyan.500'} _hover={{background:'cyan.200'}}

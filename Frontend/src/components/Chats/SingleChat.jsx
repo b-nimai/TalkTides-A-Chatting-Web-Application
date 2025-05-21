@@ -13,6 +13,7 @@ import io from 'socket.io-client'
 import Lottie from 'react-lottie'
 import animationData from '../../animations/typing.json'
 import SenderProfile from './SenderProfile';
+import { formatDistanceToNow, format } from 'date-fns';
 
 let socket, selectedChatCompare;
 
@@ -26,6 +27,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const [isTyping, setIsTyping] = useState(false);
     const [typing, setTyping] = useState(false);
     const textareaRef = useRef(null);
+    const [senderDetails, setsenderDetails] = useState(null);
+
 
     // Lottie Option
     const defaultOptions = {
@@ -76,6 +79,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     useEffect(() => {
         fetchMessageHanlder();
         selectedChatCompare = selectedChat;
+        // setsenderDetails(getSenderFull(user, selectedChat?.users));
     }, [selectedChat, fetchMessageHanlder]);
 
     // Checking if new message received
@@ -93,9 +97,52 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             else {
                 setMessages((prevMessages) => [...prevMessages, newMessageRecived]);
             }
+            const markNotificationsAsRead = async () => {
+                try {
+                    for (const notify of notification) {
+                        if (selectedChat === notify.chat._id) {
+                            await axios.put(
+                                `${API_BASE_URL}/api/notification/markAsRead`,
+                                { notificationId: notify._id },
+                                { withCredentials: true }
+                            );
+                        }
+                    }
+                    setFetchAgain((prev) => !prev);
+                } catch (error) {
+                    console.error("Error marking notifications as read:", error);
+                }
+            };
+
+            if (notification.length > 0) {
+                markNotificationsAsRead();
+            }
         });
         return () => socket.off("message received");
-    }, [notification, selectedChatCompare, fetchAgain, setNotification, setFetchAgain])
+    }, [notification, selectedChatCompare, fetchAgain, setNotification, setFetchAgain]);
+
+    // useEffect(() => {
+    //     const markNotificationsAsRead = async () => {
+    //         try {
+    //             for (const notify of notification) {
+    //                 if (selectedChat === notify.chat._id) {
+    //                     await axios.put(
+    //                         `${API_BASE_URL}/api/notification/markAsRead`,
+    //                         { notificationId: notify._id },
+    //                         { withCredentials: true }
+    //                     );
+    //                 }
+    //             }
+    //             setFetchAgain((prev) => !prev);
+    //         } catch (error) {
+    //             console.error("Error marking notifications as read:", error);
+    //         }
+    //     };
+
+    //     if (notification.length > 0) {
+    //         markNotificationsAsRead();
+    //     }
+    // }, [notification, selectedChat]);
 
 
     // Send Message Handler
@@ -180,6 +227,24 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         }, timerLength);
     
     };
+
+    // Format date
+    const formatLastSeen = (lastSeen) => {
+        const date = new Date(lastSeen);
+
+        const diffInMinutes = (Date.now() - date.getTime()) / 60000;
+
+        if (diffInMinutes < 1) {
+            return "Just now";
+        }
+
+        if (diffInMinutes < 1440) {
+            // Less than 1 day ago
+            return formatDistanceToNow(date, { addSuffix: true }); // e.g., "5 minutes ago"
+        }
+
+        return format(date, "PPpp"); // e.g., "May 22, 2025 at 4:30 PM"
+    };
     
 
   return (
@@ -204,6 +269,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                         !selectedChat.isGroupChat ? (
                             <>
                                {getSender(user, selectedChat.users)} 
+                               {senderDetails && senderDetails.isOnline ? (
+                                        <i className="fa-solid fa-circle" style={{color: 'green', fontSize: '10px'}}></i>
+                                    ) : (
+                                              <Text>Last Seen: {formatLastSeen(getSenderFull(user, selectedChat.users).lastSeen)}</Text>
+                                    )
+                                }
+
                                <SenderProfile user={getSenderFull(user, selectedChat.users)}>
                                     <Button
                                         display="flex"

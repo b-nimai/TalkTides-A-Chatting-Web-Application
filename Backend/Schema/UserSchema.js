@@ -6,6 +6,8 @@ const userSchema = mongoose.Schema({
   email: {type: String, trim: true, required: true, unique: true},
   password: {type: String, required: true},
   profilePic : {type: String, default: "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg"},
+  isOnline: { type: Boolean, default: false },
+  lastSeen: { type: Date, default: Date.now },
   Bio: {type: String, maxlength: 200}
 },
 {

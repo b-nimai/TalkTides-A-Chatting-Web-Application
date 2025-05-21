@@ -10,6 +10,7 @@ const { notFound, errorHandler } = require("./Middlewares/errorMiddlewares.js");
 const cookieParser = require("cookie-parser");
 const { Server } = require('socket.io');
 const { createServer } = require('http');
+const User = require("./Schema/UserSchema.js");
 
 const app = express();
 
@@ -69,8 +70,11 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
     // console.log("Connected to Socket.io, id:", socket.id);
 
+    let userId = "";
     socket.on("setup", (userData) => {
-        socket.join(userData?._id);
+        userId = userData._id;
+        socket.join(userId);
+        User.findByIdAndUpdate(userId, { isOnline: true }).exec();
         socket.emit('Connected');
     });
 
@@ -92,19 +96,17 @@ io.on("connection", (socket) => {
     socket.on("typing", (room) => socket.in(room).emit("typing"));
     socket.on("stop typing", (room) => socket.in(room).emit("stop typing"));
 
-    socket.off("setup", () => {
-        socket.leave(userData._id);
-    });
+    // socket.off("setup", async () => {
+    //     await User.findByIdAndUpdate(userId, { isOnline: false });
+    //     socket.leave(userData._id);
+    // });
+    socket.on("disconnect", async () => {
+        if (userId) {
+            await User.findByIdAndUpdate(userId, { isOnline: false, lastSeen: Date.now() });
+            socket.leave(userId);
+        }
+      });
 });
-
-// // Vercel specific export for serverless functions
-// module.exports = (req, res) => {
-//     if (req.url.startsWith('/socket.io')) {
-//         io.httpServer.emit('request', req, res);
-//     } else {
-//         app(req, res);
-//     }
-// };
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
