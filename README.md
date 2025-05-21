@@ -35,6 +35,7 @@
 ---
 
 ## 📁 Project Structure
+```
 TalkTides-A-Chatting-Web-Application-main/
 ├── Backend/
 │ ├── Config/ # DB configuration
@@ -56,7 +57,7 @@ TalkTides-A-Chatting-Web-Application-main/
 ├── .env # Envrionments file
 ├── package.json
 └── README.md
-
+```
 ---
 
 ## 🚀 Getting Started
@@ -68,8 +69,8 @@ TalkTides-A-Chatting-Web-Application-main/
 
 
 ### Environment Variables
-# Create a `.env` file with:
-
+- Create a `.env` file with:
+```
 PORT = 5000
 Talk_Tide_Chat_DB_URL = your_mongodb_connection_string
 JWT_SECRET = your_secret_key
@@ -77,7 +78,7 @@ JWT_SECRET = your_secret_key
 MAIL_HOST = smtp.gmail.com # Don't Change This
 MAIL_USER = your_email@example.com
 MAIL_PASS = your_email_password
-
+```
 
 ### Backend Setup
 
@@ -102,4 +103,4 @@ npm run dev
 - Contributions, suggestions, and improvements are welcome! Feel free to fork the repository and submit a pull request.
 
 ###📧 Contact
-- Built with ❤️ by [Nimai Barman] – [nimaibarman4978@gmail.com]
+- Built with ❤️ by [Nimai Barman] – [nimaibarman4978@gmail.com](mailto:nimaibarman4978@gmail.com)
